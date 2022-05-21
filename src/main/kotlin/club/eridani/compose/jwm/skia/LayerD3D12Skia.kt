@@ -5,7 +5,6 @@ import io.github.humbleui.jwm.Window
 import org.jetbrains.skia.*
 
 
-
 class LayerD3D12Skia : LayerD3D12() {
 
     private val origin = SurfaceOrigin.TOP_LEFT

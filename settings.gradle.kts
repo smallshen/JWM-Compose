@@ -1,4 +1,3 @@
-
 rootProject.name = "JWM-Compose"
 
 pluginManagement {

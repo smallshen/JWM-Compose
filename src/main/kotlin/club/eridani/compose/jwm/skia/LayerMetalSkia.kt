@@ -1,10 +1,8 @@
 package club.eridani.compose.jwm.skia
 
-import io.github.humbleui.jwm.LayerD3D12
 import io.github.humbleui.jwm.LayerMetal
 import io.github.humbleui.jwm.Window
 import org.jetbrains.skia.*
-
 
 
 class LayerMetalSkia : LayerMetal() {
