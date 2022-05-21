@@ -1,5 +1,7 @@
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -19,6 +21,7 @@ import io.github.humbleui.jwm.App
 
 fun main() {
 
+    val list = (0..1000).toList()
 
     App.start {
         ApplicationWindow {
@@ -58,6 +61,17 @@ fun main() {
                             },
                             modifier = Modifier.textInputFocusable()
                         )
+
+                        LazyColumn(
+                            Modifier.fillMaxWidth()
+                        ) {
+                            items(
+                                list,
+                                key = { it }
+                            ) {
+                                Text(it.toString())
+                            }
+                        }
                     }
                 }
             }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
+import io.github.humbleui.jwm.WindowWin32
 
 @Composable
 fun ManageWindow(
@@ -14,11 +15,6 @@ fun ManageWindow(
 ) {
     val window = LocalApplicationWindow.current
     val internalWindow = remember(window) { window.window }
-
-    LaunchedEffect(Unit) {
-        internalWindow.setVisible(true)
-        internalWindow.setTitle(title)
-    }
 
     LaunchedEffect(visible) {
         internalWindow.setVisible(visible)
