@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import club.eridani.compose.jwm.ApplicationWindow
 import club.eridani.compose.jwm.ManageWindow
+import club.eridani.compose.jwm.component.textInputFocusable
 import io.github.humbleui.jwm.App
 
 fun main() {
@@ -54,7 +55,8 @@ fun main() {
                             value = title,
                             onValueChange = {
                                 title = it
-                            }
+                            },
+                            modifier = Modifier.textInputFocusable()
                         )
                     }
                 }
