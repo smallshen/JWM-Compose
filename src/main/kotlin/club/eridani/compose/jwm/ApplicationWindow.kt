@@ -161,7 +161,8 @@ class ApplicationWindow(
 private fun createPlatformLayer(): Layer {
     return when (Platform.CURRENT ?: error("Can't determine current platform")) {
         Platform.WINDOWS -> runCatching { runCatching { LayerD3D12Skia() }.getOrElse { LayerGLSkia() } }.getOrElse { LayerRasterSkia() }
-        Platform.MACOS -> runCatching { runCatching { LayerMetalSkia() }.getOrElse { LayerGLSkia() } }.getOrElse { LayerRasterSkia() }
+//        Platform.MACOS -> runCatching { runCatching { LayerMetalSkia() }.getOrElse { LayerGLSkia() } }.getOrElse { LayerRasterSkia() }
+        Platform.MACOS -> runCatching { LayerMetalSkia() }.getOrElse { LayerGLSkia() }
         Platform.X11 -> runCatching { LayerGLSkia() }.getOrElse { LayerRasterSkia() }
     }
 }
