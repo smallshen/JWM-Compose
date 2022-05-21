@@ -124,7 +124,12 @@ open class ApplicationWindow(
                 )
             }
             is EventMouseScroll -> composeScene.sendPointerEvent(
-                eventType = PointerEventType.Scroll, position = currentMousePos(), scrollDelta = Offset(e.deltaLines, e.deltaLines)
+                eventType = PointerEventType.Scroll,
+                position = currentMousePos(),
+                scrollDelta = Offset(
+                    x = if (e.deltaX != 0f) e.deltaLines else 0f,
+                    y = if (e.deltaY != 0f) e.deltaLines else 0f,
+                )
             )
             is EventTextInput -> {
                 e.text.forEach {
