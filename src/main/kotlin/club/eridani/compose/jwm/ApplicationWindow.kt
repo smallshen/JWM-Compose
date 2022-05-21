@@ -1,5 +1,6 @@
 package club.eridani.compose.jwm
 
+import androidx.compose.foundation.LocalContextMenuRepresentation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.ComposeScene
@@ -15,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
+import club.eridani.compose.jwm.component.LightJWMContextMenuRepresentation
 import club.eridani.compose.jwm.skia.*
 import io.github.humbleui.jwm.*
 import org.jetbrains.skia.Color
@@ -24,9 +26,11 @@ import java.awt.GraphicsEnvironment
 import java.util.function.Consumer
 import java.awt.event.KeyEvent as AwtKeyEvent
 
-class ApplicationWindow(
-    val onClose: ApplicationWindow.() -> Unit = { this.window.setVisible(false) }, val content: @Composable () -> Unit
+open class ApplicationWindow(
+    val onClose: ApplicationWindow.() -> Unit = { windowState?.isMinimized = true },
+    val content: @Composable () -> Unit
 ) : Consumer<Event> {
+
     val composeScene = ComposeScene()
     val windowInfo = JWMWindowInfo()
 
@@ -47,6 +51,9 @@ class ApplicationWindow(
 
     val window = App.makeWindow()
 
+    init {
+        composeScene.setContent { BasicSetup(this@ApplicationWindow, content) }
+    }
 
     private var lastEventMouseMove = EventMouseMove(0, 0, 0, 0)
 
@@ -55,10 +62,18 @@ class ApplicationWindow(
     init {
         window.eventListener = this
         updateConstrain()
-        composeScene.setContent { BasicSetup(this, content) }
         window.layer = createPlatformLayer()
         window.setVisible(true)
         window.setTextInputEnabled(true)
+    }
+
+
+    fun currentMousePos() = Offset(lastEventMouseMove.x.toFloat(), lastEventMouseMove.y.toFloat())
+    fun hasOverlay() = composeScene.roots.size > 1
+
+    private fun updateConstrain() {
+        windowState?.size = DpSize(window.windowRect.width.dp, window.windowRect.height.dp)
+        composeScene.constraints = Constraints(maxWidth = window.contentRect.width, maxHeight = window.contentRect.height)
     }
 
 
@@ -147,19 +162,10 @@ class ApplicationWindow(
         }
     }
 
-    private fun currentMousePos() = Offset(lastEventMouseMove.x.toFloat(), lastEventMouseMove.y.toFloat())
-
-
-    private fun updateConstrain() {
-        windowState?.size = DpSize(window.windowRect.width.dp, window.windowRect.height.dp)
-        composeScene.constraints = Constraints(maxWidth = window.contentRect.width, maxHeight = window.contentRect.height)
-    }
-
-
 }
 
 private fun createPlatformLayer(): Layer {
-    return when (Platform.CURRENT ?: error("Can't determine current platform")) {
+    return when (Platform.CURRENT ?: return runCatching { LayerGLSkia() }.getOrElse { LayerRasterSkia() }) {
         Platform.WINDOWS -> runCatching { runCatching { LayerD3D12Skia() }.getOrElse { LayerGLSkia() } }.getOrElse { LayerRasterSkia() }
 //        Platform.MACOS -> runCatching { runCatching { LayerMetalSkia() }.getOrElse { LayerGLSkia() } }.getOrElse { LayerRasterSkia() }
         Platform.MACOS -> runCatching { LayerMetalSkia() }.getOrElse { LayerGLSkia() }
@@ -168,11 +174,13 @@ private fun createPlatformLayer(): Layer {
 }
 
 
-@Composable private fun BasicSetup(window: ApplicationWindow, content: @Composable () -> Unit) {
+@Composable
+private fun BasicSetup(window: ApplicationWindow, content: @Composable () -> Unit) {
     CompositionLocalProvider(
         LocalLayerContainer provides window.container,
         LocalWindowInfo provides window.windowInfo,
         LocalApplicationWindow provides window,
+        LocalContextMenuRepresentation provides LightJWMContextMenuRepresentation,
         content = content
     )
 }

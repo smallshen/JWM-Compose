@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
+import io.github.humbleui.jwm.App
 
 @Composable
 fun ManageWindow(
