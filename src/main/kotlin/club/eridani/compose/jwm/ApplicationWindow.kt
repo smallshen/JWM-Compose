@@ -49,7 +49,6 @@ class ApplicationWindow(
 
 
     private var lastEventMouseMove = EventMouseMove(0, 0, 0, 0)
-    private var lastEventKey: EventKey? = null
 
     var windowState: WindowState? = null
 
@@ -59,7 +58,7 @@ class ApplicationWindow(
         composeScene.setContent { BasicSetup(this, content) }
         window.layer = createPlatformLayer()
         window.setVisible(true)
-        window.setTextInputEnabled(false)
+        window.setTextInputEnabled(true)
     }
 
 
@@ -120,7 +119,7 @@ class ApplicationWindow(
                                 container,
                                 AwtKeyEvent.KEY_TYPED,
                                 System.nanoTime(),
-                                if (lastEventKey != null) lastEventKey!!._modifiers else 0,
+                                0,
                                 0,
                                 it,
                                 AwtKeyEvent.KEY_LOCATION_UNKNOWN
@@ -131,14 +130,13 @@ class ApplicationWindow(
             }
 
             is EventKey -> {
-                lastEventKey = e
                 composeScene.sendKeyEvent(
                     KeyEvent(
                         JWMAWTKeyEvent(
                             container,
                             if (e.isPressed) AwtKeyEvent.KEY_PRESSED else AwtKeyEvent.KEY_RELEASED,
                             System.nanoTime(),
-                            e._modifiers,
+                            jwmModifier2awt(e._modifiers),
                             jwmKeyToAWTKey(e.key),
                             location = AwtKeyEvent.KEY_LOCATION_STANDARD
                         )
