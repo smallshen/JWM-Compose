@@ -11,7 +11,7 @@ class LayerGLSkia : LayerGL() {
     private val frameBufferID = 0
     private val framebufferFormat = FramebufferFormat.GR_GL_RGBA8
     private val origin = SurfaceOrigin.BOTTOM_LEFT
-    private val colorFormat = SurfaceColorFormat.RGBA_8888
+    private val colorFormat = SurfaceColorFormat.BGRA_8888
     private val colorSpace = ColorSpace.sRGB
     private val surfaceProps = SurfaceProps(PixelGeometry.RGB_H)
 
